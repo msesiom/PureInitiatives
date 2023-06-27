@@ -96,20 +96,20 @@ public class Write {
             //Todos los Autores, ahora ir por las Publicaciones
             System.out.println("Setting Pillars");
             for(Author au : autores.getArray())
-            {
+            {         
+                sb = new StringBuilder();
+                sb.append(baseURL);
+                sb.append("/ws/api/persons/");
+                sb.append(au.getUUID());
+                System.out.println("Setting Pillars for person: " + au.getPureId());
+                HttpPut request = new HttpPut(sb.toString());
+                request.addHeader("Accept", "application/json");
+                request.addHeader("Content-Type", "application/json");
+                request.addHeader("api-key", apiKey);
+                request.addHeader("JSESSIONID", jsessionID);
                 //Check if we need to update pillars
                 if(au.checkNPillars(threshold)>0)
                 {
-                    sb = new StringBuilder();
-                    sb.append(baseURL);
-                    sb.append("/ws/api/persons/");
-                    sb.append(au.getUUID());
-                    System.out.println("Setting Pillars for person: " + au.getPureId());
-                    HttpPut request = new HttpPut(sb.toString());
-                    request.addHeader("Accept", "application/json");
-                    request.addHeader("Content-Type", "application/json");
-                    request.addHeader("api-key", apiKey);
-                    request.addHeader("JSESSIONID", jsessionID);
                     StringEntity entity = new StringEntity(getPillarJSONValue(au),ContentType.APPLICATION_FORM_URLENCODED);
                     request.setEntity(entity);
                     HttpResponse response = client.execute(request);
@@ -127,7 +127,26 @@ public class Write {
                         System.out.println(getPillarJSONValue(au));
                     }
                 }
-
+                else
+                {
+                    //Add info without pillars for those not public and not enough RO in Pillars
+                    StringEntity entity = new StringEntity(getEmptyPillarInfoJSONValue(au),ContentType.APPLICATION_FORM_URLENCODED);
+                    request.setEntity(entity);
+                    HttpResponse response = client.execute(request);
+                    if (response.getStatusLine().getStatusCode()==200)
+                    {
+                        jsessionID = getSessionID(response);
+                        String result = EntityUtils.toString(response.getEntity());
+                        Object obj = new JSONParser().parse(result);
+                        JSONObject jsonObj = (JSONObject)obj;
+                        System.out.println("Pillars Removed Successfully");
+                    }
+                    else
+                    {
+                        System.out.println(response.getStatusLine().getReasonPhrase());
+                        System.out.println(getPillarJSONValue(au));
+                    }
+                }
             }
             
         } catch (IOException ex) 
@@ -361,6 +380,29 @@ public class Write {
         return sbPillarsJSONvalue.toString();
     }
     
+    public String getEmptyPillarInfoJSONValue(Author au)
+    {
+        StringBuilder sbPillarsJSONvalue = new StringBuilder();
+        sbPillarsJSONvalue.append("{");
+        //If existing 
+        if(!au.getProfileInfo().isEmpty())
+        {
+            sbPillarsJSONvalue.append(au.getProfileInfo());
+            sbPillarsJSONvalue.append(",");
+        }
+        //Keyword config for Pure filters
+        sbPillarsJSONvalue.append("\"keywordGroups\": [{\"logicalName\": \"");
+        sbPillarsJSONvalue.append("/dk/atira/pure/rsp_keywords");
+        sbPillarsJSONvalue.append("\",\"name\": {\"");
+        sbPillarsJSONvalue.append(language);
+        sbPillarsJSONvalue.append("\": \"");
+        sbPillarsJSONvalue.append("Research Strategic Pillar Keywords");
+        sbPillarsJSONvalue.append("\"}, \"classifications\": [");
+        //Sending empty array
+//        sbPillarsJSONvalue.append(sbClassPillarsJSONvalue.toString());
+        sbPillarsJSONvalue.append("], \"typeDiscriminator\": \"ClassificationsKeywordGroup\"}]}");
+        return sbPillarsJSONvalue.toString();
+    }
     
     public String getSessionID(HttpResponse response)
     {

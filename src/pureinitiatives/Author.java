@@ -29,7 +29,7 @@ import org.json.simple.parser.ParseException;
 public class Author {
     
     private String uuid, pureId, scopusId, orcid, nombre, apellido, orgPureId, orgNombre, orgScopusId, orgPureId2, orgNombre2, orgScopusId2;
-    private String profile, researchI, prettyURL, profileInfo;
+    private String profile, researchI, prettyURL, profileInfo, visibility;
     //This is for an author with more than one scopus profile. It points to main Scopus Author ID
     private String scopusId0, rawScopusId;
     private ArrayList<Concept> fingerprint;
@@ -76,6 +76,7 @@ public class Author {
         this.boolP5 = false;
         this.boolP6 = false;
         this.boolP7 = false;
+        this.visibility = "";
     }
     
     public Author(String pureId)
@@ -115,6 +116,7 @@ public class Author {
         this.boolP5 = false;
         this.boolP6 = false;
         this.boolP7 = false;
+        this.visibility = "";
     }
     
     public boolean has2Org()
@@ -193,6 +195,16 @@ public class Author {
     public void setRawScopusId(String rawScopusId)
     {
         this.rawScopusId = rawScopusId;
+    }
+    
+    public String getVisibility()
+    {
+        return this.visibility;
+    }
+
+    public void setVisibility(String visibility)
+    {
+        this.visibility = visibility;
     }
 
     public String getNombre()

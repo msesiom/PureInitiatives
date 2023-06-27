@@ -144,6 +144,9 @@ public class Extract {
                         JSONArray prettyIds = (JSONArray)info.get("prettyURLIdentifiers");
                         if(prettyIds!=null)
                             autor.setPrettyURL(prettyIds.get(0).toString());
+                        //Visibility for not requesting and not updating those profiles
+                        JSONObject visibility = (JSONObject)entry.get("visibility");
+                        autor.setVisibility(visibility.get("key").toString());
                         System.out.println("Extracted: " + autor.getPureId() + " with prettyURL " + autor.getPrettyURL());
                         autores.add(autor);
                     }
@@ -344,57 +347,59 @@ public class Extract {
         System.out.println("Extracting Number of RO for pillar: " + pillarNum);
         for(Author au : autores.getArray())
         {
-            System.out.println("Extracting count of RO for person: " + au.getPureId());
-            String keywords[] = keywordsP.split(",");
-            for(String keyword : keywords)
+            if(au.getVisibility().equalsIgnoreCase("FREE"))
             {
-                try 
-                { 
-                    sb = new StringBuilder();
-                    jsonBody = new StringBuilder();
-                    sb.append(baseURL);
-                    sb.append("/ws/api/");
-                    sb.append(apiVersion);
-//                    System.out.println("Extracting count of RO for person: " + au.getPureId());
-                    sb.append("/research-outputs");
-                    HttpPost request = new HttpPost(sb.toString());
-                    request.addHeader("Accept", "application/json");
-                    request.addHeader("Content-Type", "application/json");
-                    request.addHeader("api-key", apiKey);
-                    request.addHeader("JSESSIONID", jsessionID);
-                    jsonBody.append("{ \"publishedBeforeDate\": \"");
-                    jsonBody.append(endYear);
-//                    jsonBody.append("2020");
-                    jsonBody.append("-12-31\",");
-                    jsonBody.append(" \"publishedAfterDate\": \"");
-                    jsonBody.append(startYear);
-//                    jsonBody.append("2016");
-                    jsonBody.append("-01-01\",");
-                    jsonBody.append("\"forPersons\": {\"ids\": [\"");
-                    jsonBody.append(au.getPureId());
-                    jsonBody.append("\"]},");
-                    jsonBody.append("\"searchString\": \"");
-                    jsonBody.append(keyword.trim());
-                    jsonBody.append("\"}");
-                    StringEntity entity = new StringEntity(jsonBody.toString(),ContentType.APPLICATION_FORM_URLENCODED);
-                    request.setEntity(entity);
-                    HttpResponse response = client.execute(request);
-                    if (response.getStatusLine().getStatusCode()==200)
+                //Extract only for public profiles
+                System.out.println("Extracting count of RO for person: " + au.getPureId());
+                String keywords[] = keywordsP.split(",");
+                for(String keyword : keywords)
+                {
+                    try 
+                    { 
+                        sb = new StringBuilder();
+                        jsonBody = new StringBuilder();
+                        sb.append(baseURL);
+                        sb.append("/ws/api/");
+                        sb.append(apiVersion);
+    //                    System.out.println("Extracting count of RO for person: " + au.getPureId());
+                        sb.append("/research-outputs");
+                        HttpPost request = new HttpPost(sb.toString());
+                        request.addHeader("Accept", "application/json");
+                        request.addHeader("Content-Type", "application/json");
+                        request.addHeader("api-key", apiKey);
+                        request.addHeader("JSESSIONID", jsessionID);
+                        jsonBody.append("{ \"publishedBeforeDate\": \"");
+                        jsonBody.append(endYear);
+    //                    jsonBody.append("2020");
+                        jsonBody.append("-12-31\",");
+                        jsonBody.append(" \"publishedAfterDate\": \"");
+                        jsonBody.append(startYear);
+    //                    jsonBody.append("2016");
+                        jsonBody.append("-01-01\",");
+                        jsonBody.append("\"forPersons\": {\"ids\": [\"");
+                        jsonBody.append(au.getPureId());
+                        jsonBody.append("\"]},");
+                        jsonBody.append("\"searchString\": \"");
+                        jsonBody.append(keyword.trim());
+                        jsonBody.append("\"}");
+                        StringEntity entity = new StringEntity(jsonBody.toString(),ContentType.APPLICATION_FORM_URLENCODED);
+                        request.setEntity(entity);
+                        HttpResponse response = client.execute(request);
+                        if (response.getStatusLine().getStatusCode()==200)
+                        {
+                            jsessionID = getSessionID(response);
+                            String result = EntityUtils.toString(response.getEntity());
+                            Object obj = new JSONParser().parse(result);
+                            JSONObject jsonObj = (JSONObject)obj;
+                            au.addRO(pillarNum, Integer.valueOf(jsonObj.get("count").toString()));
+                        }
+                    } catch (IOException ex) 
                     {
-                        jsessionID = getSessionID(response);
-                        String result = EntityUtils.toString(response.getEntity());
-                        Object obj = new JSONParser().parse(result);
-                        JSONObject jsonObj = (JSONObject)obj;
-                        au.addRO(pillarNum, Integer.valueOf(jsonObj.get("count").toString()));
-//                        if(!jsonObj.get("count").toString().equalsIgnoreCase("0"))
-//                            System.out.println("ya " + jsonObj.get("count").toString());
+                        Logger.getLogger(Extract.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (ParseException ex) 
+                    {
+                        Logger.getLogger(Extract.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                } catch (IOException ex) 
-                {
-                    Logger.getLogger(Extract.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (ParseException ex) 
-                {
-                    Logger.getLogger(Extract.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
