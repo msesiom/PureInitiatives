@@ -99,6 +99,14 @@ public class PureExtractor
             String startYear = scanner.nextLine();
             System.out.println("Set end year for the Research Outputs (Default 2020): ");
             String endYear = scanner.nextLine();
+            String fileName = "Profiles.xlsx";
+            System.out.println("Name of previous extraction file: ");
+            fileName = scanner.nextLine();
+            if(!fileName.equalsIgnoreCase(""))
+            {
+                ExcelProcessor xlsProcessor = new ExcelProcessor(fileName);
+                xlsProcessor.openFile();
+            }
             
 //            System.out.println("Please introduce a name for the extracted file: ");
 //            String excelFileName = scanner.nextLine();
@@ -142,23 +150,27 @@ public class PureExtractor
             {
                 row = sheet0.getRow(contFilas);
                 cell = row.createCell(0);
-                cell.setCellValue(au.getNombre() + " " + au.getApellido());
+                cell.setCellValue(au.getNombre() );
                 cell = row.createCell(1);
-                cell.setCellValue(au.getPureId());
+                cell.setCellValue( au.getApellido());
                 cell = row.createCell(2);
-                cell.setCellValue(au.getPrettyURL());
+                cell.setCellValue(au.getPureId());
                 cell = row.createCell(3);
-                cell.setCellValue(au.getContPillar1());
+                cell.setCellValue(au.getUUID());
                 cell = row.createCell(4);
-                cell.setCellValue(au.getContPillar2());
+                cell.setCellValue(au.getContPillar1());
                 cell = row.createCell(5);
-                cell.setCellValue(au.getContPillar3());
+                cell.setCellValue(au.getContPillar2());
                 cell = row.createCell(6);
-                cell.setCellValue(au.getContPillar4());
+                cell.setCellValue(au.getContPillar3());
                 cell = row.createCell(7);
-                cell.setCellValue(au.getContPillar5());
+                cell.setCellValue(au.getContPillar4());
                 cell = row.createCell(8);
+                cell.setCellValue(au.getContPillar5());
+                cell = row.createCell(9);
                 cell.setCellValue(au.getContPillar6());
+                cell = row.createCell(10);
+                cell.setCellValue(au.getPrettyURL());
                 contFilas++;
             }
             wb0.createSheet("Status");
@@ -173,20 +185,24 @@ public class PureExtractor
             {
                 row = sheet1.getRow(contFilas);
                 cell = row.createCell(0);
-                cell.setCellValue(au.getNombre() + " " + au.getApellido());
+                cell.setCellValue(au.getNombre() );
                 cell = row.createCell(1);
-                cell.setCellValue(au.getPureId());
+                cell.setCellValue( au.getApellido());
                 cell = row.createCell(2);
-                cell.setCellValue(au.getBoolP1());
+                cell.setCellValue(au.getPureId());
                 cell = row.createCell(3);
-                cell.setCellValue(au.getBoolP2());
+                cell.setCellValue(au.getUUID());
                 cell = row.createCell(4);
-                cell.setCellValue(au.getBoolP3());
+                cell.setCellValue(au.getBoolP1());
                 cell = row.createCell(5);
-                cell.setCellValue(au.getBoolP4());
+                cell.setCellValue(au.getBoolP2());
                 cell = row.createCell(6);
-                cell.setCellValue(au.getBoolP5());
+                cell.setCellValue(au.getBoolP3());
                 cell = row.createCell(7);
+                cell.setCellValue(au.getBoolP4());
+                cell = row.createCell(8);
+                cell.setCellValue(au.getBoolP5());
+                cell = row.createCell(9);
                 cell.setCellValue(au.getBoolP6());
                 contFilas++;
             }

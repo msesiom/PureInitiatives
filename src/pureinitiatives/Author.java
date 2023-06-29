@@ -119,6 +119,46 @@ public class Author {
         this.visibility = "";
     }
     
+    public Author(String nombre, String apellido, String pureId, String uuid, int contPillar1, int contPillar2, int contPillar3, int contPillar4, int contPillar5, int contPillar6, int contPillar7)
+    {
+        this.uuid = uuid;
+        this.pureId = pureId;
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.orcid = "";
+        this.scopusId = "";
+        this.orgPureId = "";
+        this.orgNombre = "";
+        this.orgScopusId = "";
+        this.scopusId0 = "";
+        this.rawScopusId = "";
+        this.profile = "";
+        this.researchI = "";
+        this.prettyURL = "";
+        this.profileInfo = "";
+        this.fingerprint = new ArrayList<>();
+        this.fPProfile = new ArrayList<>();
+        this.fPResearchInterests = new ArrayList<>();
+        this.research = new ArrayList<>();
+        this.contRO = 0;
+        this.contPillar1 = contPillar1;
+        this.contPillar2 = contPillar2;
+        this.contPillar3 = contPillar3;
+        this.contPillar4 = contPillar4;
+        this.contPillar5 = contPillar5;
+        this.contPillar6 = contPillar6;
+        this.contPillar7 = contPillar7;
+        this.nPillars = 0;
+        this.boolP1 = false;
+        this.boolP2 = false;
+        this.boolP3 = false;
+        this.boolP4 = false;
+        this.boolP5 = false;
+        this.boolP6 = false;
+        this.boolP7 = false;
+        this.visibility = "";
+    }
+    
     public boolean has2Org()
     {
         if (orgPureId2.isEmpty())
@@ -625,6 +665,41 @@ public class Author {
         return this.contPillar7;
     }
     
+    public void setContPillar1(int contPillar1)
+    {
+        this.contPillar1 = contPillar1;
+    }
+    
+    public void setContPillar2(int contPillar2)
+    {
+        this.contPillar2 = contPillar2;
+    }
+    
+    public void setContPillar3(int contPillar3)
+    {
+        this.contPillar3 = contPillar3;
+    }
+    
+    public void setContPillar4(int contPillar4)
+    {
+        this.contPillar4 = contPillar4;
+    }
+    
+    public void setContPillar5(int contPillar5)
+    {
+        this.contPillar5 = contPillar5;
+    }
+    
+    public void setContPillar6(int contPillar6)
+    {
+        this.contPillar6 = contPillar6;
+    }
+    
+    public void setContPillar7(int contPillar7)
+    {
+        this.contPillar7 = contPillar7;
+    }
+    
     public boolean getBoolP1()
     {
         return this.boolP1;
@@ -658,6 +733,41 @@ public class Author {
     public boolean getBoolP7()
     {
         return this.boolP7;
+    }
+    
+    public void setBoolP1(boolean boolP1)
+    {
+        this.boolP1 = boolP1;
+    }
+    
+    public void setBoolP2(boolean boolP2)
+    {
+        this.boolP2 = boolP2;
+    }
+    
+    public void setBoolP3(boolean boolP3)
+    {
+        this.boolP3 = boolP3;
+    }
+    
+    public void setBoolP4(boolean boolP4)
+    {
+        this.boolP4 = boolP4;
+    }
+    
+    public void setBoolP5(boolean boolP5)
+    {
+        this.boolP5 = boolP5;
+    }
+    
+    public void setBoolP6(boolean boolP6)
+    {
+        this.boolP6 = boolP6;
+    }
+    
+    public void setBoolP7(boolean boolP7)
+    {
+        this.boolP7 = boolP7;
     }
         
     public int posRO(String id, ArrayList<ResearchOutput> pillar)

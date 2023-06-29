@@ -15,7 +15,7 @@ public class Authors {
     
     private ArrayList<Author> autores;
     private String apiKey, apiVersion, baseURL;
-    
+       
     public Authors(String baseURL, String apiVersion, String apiKey)
     {
         this.autores = new ArrayList<>();
